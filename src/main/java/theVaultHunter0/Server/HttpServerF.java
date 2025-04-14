@@ -1,12 +1,13 @@
 package theVaultHunter0.Server;
 
 import theVaultHunter0.Client.Client;
+import theVaultHunter0.Server.Checker.DefaultChecker;
 
-import javax.sound.sampled.Port;
 import java.util.Scanner;
 import java.net.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class HttpServerF {
 
@@ -42,13 +43,20 @@ public class HttpServerF {
 
         Thread closingThread = new Thread(() -> {
             try {
-                closingThread();
+                closingMainThread();
             } catch (IOException | InterruptedException e) {
                 throw new RuntimeException(e);
             }
         });
         closingThread.start();
 
+        //Check if default was initialize
+        if(DefaultChecker.isDefaultFonctionExist())
+        {
+            System.out.println("Default header initialize.");
+        }
+
+        System.out.println("IP:SOCKET = " + this.getAddrString());
         System.out.println("Server ready, to stop enter 'Q' or 'q'.");
 
         closingThread.join();
@@ -76,16 +84,23 @@ public class HttpServerF {
 
         //When the server is shutdown, wait for all clients to join.
         if(!clients.isEmpty()) {
-            for(Client client : clients){
-                client.getThread().join();
+            for(int i = clients.size() - 1; i >= 0; i--){
+                Client client = clients.remove(i);
+                try {
+                    client.getThread().join();
+                    removeClients(client.getId());
+                } catch (InterruptedException e) {
+                    System.err.println("Error when joining threads : " + e);
+                }
+
             }
-            System.out.println("All client thread were join.");
+            System.out.println("All client thread have joined.");
         }
-        System.out.println("All client thread were already joined.");
+        System.out.println("No client to join.");
     }
 
     //Simple thread to shut down the server via the terminal
-    private static void closingThread() throws IOException, InterruptedException {
+    private static void closingMainThread() throws IOException, InterruptedException {
         Scanner scan = new Scanner(System.in);
         while(running){
             String strScan = scan.nextLine();
@@ -95,6 +110,18 @@ public class HttpServerF {
             }
         }
         Thread.sleep(100);
+    }
+
+    //Remove and delete the clients
+    public static void removeClients(UUID id){
+        System.out.println("Before removing client : " + clients.toString());
+        for(int i = 0; i < clients.size(); i++){
+            if(clients.get(i).getId() == id){
+                Client c = clients.remove(i);
+                System.out.println("After removing client : " + clients.toString());
+                return;
+            }
+        }
     }
 
     //Return the addresse + port of the server

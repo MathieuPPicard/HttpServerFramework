@@ -1,4 +1,4 @@
-package theVaultHunter0.Server;
+package theVaultHunter0.Default;
 
 import theVaultHunter0.Header.Header;
 

@@ -4,16 +4,15 @@ import theVaultHunter0.Server.HttpServerF;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.UUID;
 
 public class Client {
-    private static int c = 0;
-    private int id;
+    private UUID id;
     private Thread threadClient;
     private Socket socketClient;
 
     public Client(Socket socket) throws IOException, InterruptedException {
-        id = c;
-        c++;
+        id = UUID.randomUUID();
         socketClient = socket;
     }
 
@@ -27,9 +26,10 @@ public class Client {
         });
         threadClient.start();
         threadClient.join();
+        HttpServerF.removeClients(this.id);
     }
 
-    public void startClient() throws IOException, InterruptedException {
+    private void startClient() throws IOException, InterruptedException {
         InputStream input = socketClient.getInputStream();
         OutputStream output = socketClient.getOutputStream();
         BufferedReader reader = new BufferedReader(new InputStreamReader(input));
@@ -55,5 +55,9 @@ public class Client {
 
     public Socket getSocketClient(){
         return socketClient;
+    }
+
+    public UUID getId(){
+        return id;
     }
 }
