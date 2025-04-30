@@ -33,7 +33,7 @@ public class Main {
             "\r\n" +
             "{ \"name\": \"John Doe\", \"email\": \"johndoe@example.com\" }";
 
-        Http http = Http.fromString(httpRequest);
-        System.out.println(http.getHeader());
+        //Http http = Http.fromString(httpRequest);
+        //System.out.println(http.getHeader());
     }
 }

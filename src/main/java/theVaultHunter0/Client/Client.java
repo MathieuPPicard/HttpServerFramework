@@ -29,6 +29,10 @@ public class Client {
         HttpServerF.removeClients(this.id);
     }
 
+    //HERE THE THREAD OF THE CLIENT READ ON THE SOCKET AND WAIT FOR INCOMMING.
+    //NEED TO MODIFY SO THAT IT WILL CREATE FROM THE INPUT A HTTP OBJECT.
+    //NEED TO COMPARE IF DEFAULTHEADER EXIST
+    //CHECK SECURITY ETC...
     private void startClient() throws IOException, InterruptedException {
         InputStream input = socketClient.getInputStream();
         OutputStream output = socketClient.getOutputStream();

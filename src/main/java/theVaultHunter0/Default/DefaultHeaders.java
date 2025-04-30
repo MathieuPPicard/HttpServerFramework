@@ -71,6 +71,7 @@ public class DefaultHeaders {
                 case "response" -> throw new Error("Cant add a response header in a request header.");
                 default -> throw new Error("Section : " + section + " not recognized when adding section to default request header.");
             }
+            return;
         }
         throw new Error("Section : " + section + " not recognized when adding section to default request header.");
     }

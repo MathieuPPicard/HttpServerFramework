@@ -1,8 +1,11 @@
 package theVaultHunter0.Server;
 
 import theVaultHunter0.Client.Client;
+import theVaultHunter0.Default.DefaultHeaders;
 import theVaultHunter0.Server.Checker.DefaultChecker;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Scanner;
 import java.net.*;
 import java.io.*;
@@ -51,8 +54,16 @@ public class HttpServerF {
         closingThread.start();
 
         //Check if default was initialize
-        if(DefaultChecker.isDefaultFonctionExist())
-        {
+        Method defaultInitMethod = DefaultChecker.verifyDefault();
+        if(defaultInitMethod != null){
+            try{
+                defaultInitMethod.invoke(null);
+            } catch(InvocationTargetException | IllegalAccessException e){
+                System.out.println("Invoking default init method failed");
+                throw new RuntimeException(e);
+            }
+            System.out.println(DefaultHeaders.isRequestDefaultEmpty());
+            System.out.println(DefaultHeaders.isResponseDefaultEmpty());
             System.out.println("Default header initialize.");
         }
 

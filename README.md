@@ -13,14 +13,13 @@ I will try to implement most of the specification but some details and usage cas
 
 - Default header
   - Default Request and response init(DefaultHeaders). [X]
-    
-  - Create DefaultChecker(analyse Default.Default if defaultInit() exist if yes run it).
+  - Create DefaultChecker(analyse Default.Default if defaultInit() exist if yes run it). [X]
 - Http Request 
   - Parsing []
     - Use HttpBuilder to create the Http Object and easily parse through the request []
   - Analyse(header,security) []
 - Http Response
-  - ...
+  - TODO
 - Server
   - Basic of a threading server [X] 
   - Handle removing client object from the list [X]
