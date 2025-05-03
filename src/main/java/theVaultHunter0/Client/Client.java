@@ -1,8 +1,11 @@
 package theVaultHunter0.Client;
 
+import theVaultHunter0.Default.DefaultHeaders;
+import theVaultHunter0.Http;
 import theVaultHunter0.Server.HttpServerF;
 
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 import java.util.UUID;
 
@@ -38,18 +41,29 @@ public class Client {
         OutputStream output = socketClient.getOutputStream();
         BufferedReader reader = new BufferedReader(new InputStreamReader(input));
         String in = reader.readLine();
-        if(in != null) {
-            System.out.println(in);
+        //From what was read by the bufferReader create the HTTP object
+        Http request;
+        try{
+            request = Http.fromString(in);
+        } catch (InvocationTargetException | IllegalAccessException e) {
+            System.out.println("For client:" + id + "error in making HTTP object.");
+            //
+            //TODO CREATE A ERROR MESSAGE CLOSE THE OUTPUT AND SOCKET.
+            //
+            socketClient.close();
+            throw new RuntimeException(e);
         }
-        String exemple =
-                "HTTP/1.1 200 OK\r\n" +
-                "Content-Type: text/plain\r\n" +
-                "Content-Length: 13\r\n" +
-                "\r\n" +
-                "Hello!";
-        output.write(exemple.getBytes());
-        output.flush();
-        output.close();
+        //IF A DEFAULT REQUEST HAS BEEN MADE
+        if(!DefaultHeaders.isRequestDefaultEmpty()){
+            //
+            //TODO CREATE FUNCTION THAT WILL COMPARE THE DEFAULT REQUEST HEADER AND THE RECEIVE HEADER
+            // - IF NO MATCH SEND BACK A ERROR MESSAGE
+            // - IF MATCH CONTINUE...
+            //
+            socketClient.close();
+        }
+        System.out.println(request);
+        sendOutput(output, "Good job!");
         socketClient.close();
     }
 
@@ -63,5 +77,19 @@ public class Client {
 
     public UUID getId(){
         return id;
+    }
+
+    public void sendOutput(OutputStream output, String data) {
+        try {
+            String response =
+                    "HTTP/1.1 200 OK\r\n"  +
+                            "\r\n" +
+                            data;
+            output.write(response.getBytes());
+            output.flush();
+            output.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
